@@ -1,0 +1,235 @@
+/* UpdateMenu.css - with higher contrast pills, input adjustments and a taller container */
+
+/* container adjustments */
+.update-menu-root .page-title {
+  text-align: center;
+  font-size: 28px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+/* main rounded container that holds the menu area */
+/* increased height (responsive) so Save/Delete are visible by default on typical screens */
+.menu-container-rounded {
+  margin: 16px auto;
+  max-width: 1100px;
+  background: var(--panel, #f1dedf);
+  border-radius: 18px;
+  border: 4px solid #000;
+  padding: 18px;
+  display: flex;
+  align-items: stretch;
+  box-sizing: border-box;
+  height: calc(100vh - 140px);   /* taller and responsive */
+  max-height: 920px;
+  min-height: 720px;            /* bit taller by default */
+  overflow: hidden;             /* prevent big container scroll */
+}
+
+/* left pane (the "Your Food Menu" area) */
+.menu-left-pane {
+  width: 360px;
+  display: flex;
+  flex-direction: column;
+  padding: 12px;
+  box-sizing: border-box;
+  background: transparent;
+  height: 100%;            /* fill parent height so internal scroll works */
+}
+
+/* scrollable list inside left pane */
+.menu-list-scroll {
+  flex: 1 1 auto;
+  overflow-y: auto;        /* <-- the scroll lives here */
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding-right: 8px;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* the pill-like menu card */
+.menu-card-pill {
+  background: #fff;
+  border: 3px solid #000;
+  border-radius: 14px;
+  padding: 10px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.06);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+.menu-card-pill.selected {
+  outline: 3px solid rgba(0,0,0,0.08);
+}
+
+/* small EDIT badge top-right */
+.menu-card-top {
+  display: flex;
+  justify-content: flex-end;
+}
+.edit-badge {
+  font-size: 11px;
+  background: #ffdfe0;
+  color: #5d2e2e;
+  padding: 4px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(0,0,0,0.06);
+  box-shadow: 0 2px 0 rgba(0,0,0,0.06);
+  cursor: pointer;
+}
+
+/* image area inside card (centered) */
+.menu-card-image-small {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 6px;
+  background: #faf7f7;
+  border: 1px solid #e8e0e0;
+}
+.menu-card-image-small img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.menu-card-image-text {
+  font-size: 13px;
+  color: #666;
+  text-align: center;
+}
+
+/* footer area with food name */
+.menu-card-footer {
+  margin-top: 8px;
+  display: flex;
+  justify-content: flex-start;
+}
+.food-name {
+  font-weight: 700;
+  font-size: 13px;
+  color: #222;
+}
+
+/* centered Add New Menu Item button at bottom of left pane */
+.add-new-wrapper {
+  margin-top: 12px;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+.add-new-btn {
+  background: transparent;
+  border: none;
+  font-size: 16px;
+  cursor: pointer;
+  display:flex;
+  align-items:center;
+  gap:8px;
+  padding: 10px 16px;
+  border-radius: 999px;
+  box-shadow: 0 4px 0 rgba(0,0,0,0.06);
+  background: #f5dede;
+}
+
+/* vertical divider */
+.vertical-divider {
+  width: 14px; /* visual gap + divider line in the center */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  position: relative;
+}
+.vertical-divider::before {
+  content: '';
+  width: 6px;
+  height: 90%;
+  background: linear-gradient(#e9d4d4, #f6e6e6);
+  border-radius: 6px;
+  box-shadow: inset 0 2px 0 rgba(0,0,0,0.03);
+}
+
+/* right pane (editor) */
+.menu-right-pane {
+  flex: 1 1 auto;
+  padding: 18px;
+  box-sizing: border-box;
+  background: #fff;
+  border-radius: 12px;
+  border: 3px solid #000;
+  min-height: 600px;
+  overflow-y: auto;        /* allow editor to scroll internally if needed */
+}
+
+.field { margin-bottom: 12px; display:flex; flex-direction:column; }
+.field-label { font-weight:600; margin-bottom:6px; font-size:14px; }
+.field textarea, .field input { padding:10px; border-radius:8px; border:1px solid #ccc; font-size:14px; width:100%; box-sizing:border-box; }
+.field-inline { display:flex; gap:12px; align-items:center; }
+.field-inline .field-label { min-width: 110px; }
+
+.image-uploader {
+  display:flex;
+  gap:14px;
+  align-items:flex-start;
+  margin-top:6px;
+}
+
+.image-preview-area {
+  width: 360px;
+  height: 220px;
+  border-radius: 10px;
+  border: 1px solid #ddd;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  background:#fafafa;
+  overflow:hidden;
+}
+.preview-img { width:100%; height:100%; object-fit:cover; }
+
+.no-image-large {
+  color:#777;
+  padding:12px;
+  text-align:center;
+  font-size:14px;
+}
+
+.image-controls { display:flex; flex-direction:column; gap:8px; }
+.control-btn {
+  padding:8px 12px;
+  border-radius: 999px;
+  border:none;
+  cursor:pointer;
+  background:#ffdfe0;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.06);
+}
+
+/* ---------- Availability pills (contrast changed) ---------- */
+/* unpressed pill = lighter (high contrast) to indicate de-selection */
+.pill {
+  padding:8px 12px;
+  border-radius:999px;
+  cursor:pointer;
+  border: 1px solid #4d2a2a;
+  background: #ffdfdf;   /* light/deselected background */
+  color: #5d2e2e;           /* darker text for contrast */
+  box-shadow: 0 3px 0 rgba(0,0,0,0.08);
+}
+
+/* active (selected) pill = dark background to indicate selection */
+.pill.active {
+  background: #6b3b3b;   /* dark when selected */
+  color: #fff;        /* lighter text for readability */
+  border: 1px solid #d6b8b8;
+  box-shadow: 0 3px 0 rgba(0,0,0,0.06);
+}
+
+.editor-actions { display:flex; justify-content:flex-end; gap:12px; margin-top:16px; }
+.btn-delete { background:#ffd6d6; border:1px solid #e0a7a7; padding:10px 14px; border-radius:999px; cursor:pointer; }
+.btn-save { background:#ffc9c9; border:1px solid #e39f9f; padding:10px 14px; border-radius:999px; cursor:pointer; }
+
+.editor.empty { display:flex; align-items:center; justify-content:center; min-height:220px; color:#666; }
