@@ -63,6 +63,10 @@
 .menu-card-pill.selected {
   outline: 3px solid rgba(0,0,0,0.08);
 }
+.menu-card-pill.has-error {
+  border-color: #d14343;
+  box-shadow: 0 0 0 2px rgba(209, 67, 67, 0.2);
+}
 
 /* small EDIT badge top-right */
 .menu-card-top {
@@ -108,11 +112,24 @@
   margin-top: 8px;
   display: flex;
   justify-content: flex-start;
+  align-items: center;
+  gap: 8px;
 }
 .food-name {
   font-weight: 700;
   font-size: 13px;
   color: #222;
+}
+.status-tag {
+  background: #ffe5e5;
+  color: #b13c3c;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 999px;
+  border: 1px solid rgba(177, 60, 60, 0.35);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
 }
 
 /* centered Add New Menu Item button at bottom of left pane */
@@ -170,6 +187,21 @@
 .field textarea, .field input { padding:10px; border-radius:8px; border:1px solid #ccc; font-size:14px; width:100%; box-sizing:border-box; }
 .field-inline { display:flex; gap:12px; align-items:center; }
 .field-inline .field-label { min-width: 110px; }
+.field-error-state textarea,
+.field-error-state input {
+  border-color: #d14343 !important;
+  background: #fff6f6;
+  box-shadow: 0 0 0 1px rgba(209, 67, 67, 0.15);
+}
+.input-error {
+  border-color: #d14343 !important;
+}
+.field-error-message {
+  color: #b13c3c;
+  font-size: 12px;
+  margin-top: 6px;
+  line-height: 1.4;
+}
 
 .image-uploader {
   display:flex;
@@ -227,9 +259,26 @@
   border: 1px solid #d6b8b8;
   box-shadow: 0 3px 0 rgba(0,0,0,0.06);
 }
+.availability {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  flex-wrap: wrap;
+}
+.availability.field-error-state {
+  border: 1px solid #d14343;
+  border-radius: 12px;
+  padding: 12px 16px;
+  background: #fff6f6;
+}
 
 .editor-actions { display:flex; justify-content:flex-end; gap:12px; margin-top:16px; }
 .btn-delete { background:#ffd6d6; border:1px solid #e0a7a7; padding:10px 14px; border-radius:999px; cursor:pointer; }
 .btn-save { background:#ffc9c9; border:1px solid #e39f9f; padding:10px 14px; border-radius:999px; cursor:pointer; }
+.btn-save[disabled],
+.btn-save[aria-disabled="true"] {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
 
 .editor.empty { display:flex; align-items:center; justify-content:center; min-height:220px; color:#666; }

@@ -9,7 +9,49 @@ export default function UpdateMenu() {
   const [items, setItems] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [errors, setErrors] = useState({});
   const fileInputRef = useRef(null);
+
+  function validateItem(item) {
+    if (!item) return {};
+    const errs = {};
+    const name = (item.name ?? '').trim();
+    const description = (item.description ?? '').trim();
+    const allergens = (item.allergens ?? '').trim();
+    const price = (item.price ?? '').toString().trim();
+
+    if (!name) {
+      errs.name = 'Give this item a name.';
+    }
+    if (!description) {
+      errs.description = 'Add a short description so guests know what to expect.';
+    }
+    if (!allergens) {
+      errs.allergens = 'List key allergens or "None" if there are no concerns.';
+    }
+    if (!price) {
+      errs.price = 'Enter a price using two decimal places (e.g., 9.50).';
+    } else if (!/^\d+(\.\d{2})$/.test(price)) {
+      errs.price = 'Use a number with two decimal places (e.g., 9.50).';
+    }
+    if (typeof item.available !== 'boolean') {
+      errs.available = 'Mark this dish as available or unavailable.';
+    }
+
+    return errs;
+  }
+
+  function updateValidationForItem(item) {
+    if (!item) return {};
+    const validation = validateItem(item);
+    setErrors((prev) => {
+      const next = { ...prev };
+      if (Object.keys(validation).length) next[item.id] = validation;
+      else delete next[item.id];
+      return next;
+    });
+    return validation;
+  }
 
   useEffect(() => {
     DatabaseInterface.getRestaurantInfo()
@@ -18,6 +60,16 @@ export default function UpdateMenu() {
     MenuSessionInterface.getMenuItems().then((list) => {
       setItems(list);
       setSelectedIndex(list.length ? 0 : null);
+      setErrors(() => {
+        const initial = {};
+        list.forEach((item) => {
+          const validation = validateItem(item);
+          if (Object.keys(validation).length) {
+            initial[item.id] = validation;
+          }
+        });
+        return initial;
+      });
     });
   }, []);
 
@@ -28,6 +80,7 @@ export default function UpdateMenu() {
         setSelectedIndex(next.length - 1);
         return next;
       });
+      updateValidationForItem(newItem);
     });
   }
 
@@ -36,11 +89,17 @@ export default function UpdateMenu() {
   }
 
   function updateField(idx, key, value) {
+    let updatedItem;
     setItems((prev) => {
       const copy = [...prev];
-      copy[idx] = { ...copy[idx], [key]: value };
+      const current = copy[idx] ?? {};
+      updatedItem = { ...current, [key]: value };
+      copy[idx] = updatedItem;
       return copy;
     });
+    if (updatedItem) {
+      updateValidationForItem(updatedItem);
+    }
   }
 
   function handleFileSelect(e, idx) {
@@ -136,9 +195,15 @@ export default function UpdateMenu() {
   /* ---------- Save/Delete ---------- */
 
   async function handleSave(idx) {
+    const item = items[idx];
+    if (!item) return;
+    const validation = updateValidationForItem(item);
+    if (Object.keys(validation).length) {
+      return;
+    }
     setSaving(true);
     try {
-      const toSave = { ...items[idx] };
+      const toSave = { ...item };
       delete toSave.imageFile;
       delete toSave.imageUrl;
       const saved = await MenuSessionInterface.updateMenuItem(toSave.id, toSave);
@@ -148,6 +213,7 @@ export default function UpdateMenu() {
         copy[idx] = { ...saved, ...transient };
         return copy;
       });
+      updateValidationForItem({ ...saved, imageUrl: item.imageUrl, imageFile: item.imageFile });
       alert('Saved (session-only). Images are in-memory only for this session.');
     } catch (err) {
       console.error(err);
@@ -172,6 +238,11 @@ export default function UpdateMenu() {
         else setSelectedIndex(Math.max(0, idx - 1));
         return copy;
       });
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[id];
+        return next;
+      });
     } catch (err) {
       console.error(err);
       alert('Delete failed.');
@@ -190,6 +261,9 @@ export default function UpdateMenu() {
   }, [items]);
 
   const selected = selectedIndex != null ? items[selectedIndex] : null;
+  const selectedErrors = selected ? errors[selected.id] : null;
+  const hasErrors = selectedErrors ? Object.keys(selectedErrors).length > 0 : false;
+  const errorIdFor = (field) => (selected ? `${selected.id}-${field}-error` : undefined);
 
   return (
     <div className="app-root update-menu-root">
@@ -215,10 +289,12 @@ export default function UpdateMenu() {
                   {items.length === 0 ? (
                     <div className="no-items-placeholder">No menu items yet</div>
                   ) : (
-                    items.map((it, i) => (
+                    items.map((it, i) => {
+                      const itemErrors = errors[it.id];
+                      return (
                       <div
                         key={it.id}
-                        className={`menu-card-pill ${selectedIndex === i ? 'selected' : ''}`}
+                        className={`menu-card-pill ${selectedIndex === i ? 'selected' : ''} ${itemErrors ? 'has-error' : ''}`}
                         onClick={() => selectIndex(i)}
                       >
                         <div className="menu-card-top">
@@ -235,9 +311,13 @@ export default function UpdateMenu() {
 
                         <div className="menu-card-footer">
                           <div className="food-name">{it.name || 'FOOD NAME'}</div>
+                          {itemErrors && (
+                            <div className="status-tag" aria-label="This item needs more details">Needs details</div>
+                          )}
                         </div>
                       </div>
-                    ))
+                    );
+                    })
                   )}
                 </div>
 
@@ -254,26 +334,56 @@ export default function UpdateMenu() {
                 {selected ? (
                   <div className="editor">
                     {/* Food Name field */}
-                    <label className="field">
+                    <label className={`field ${selectedErrors?.name ? 'field-error-state' : ''}`}>
                       <div className="field-label">Food Name</div>
                       <input
                         value={selected.name}
                         onChange={(e) => updateField(selectedIndex, 'name', e.target.value)}
                         placeholder="Item name"
+                        className={selectedErrors?.name ? 'input-error' : ''}
+                        aria-invalid={Boolean(selectedErrors?.name)}
+                        aria-describedby={selectedErrors?.name ? errorIdFor('name') : undefined}
                       />
+                      {selectedErrors?.name && (
+                        <div className="field-error-message" id={errorIdFor('name')}>
+                          {selectedErrors.name}
+                        </div>
+                      )}
                     </label>
 
-                    <label className="field">
+                    <label className={`field ${selectedErrors?.description ? 'field-error-state' : ''}`}>
                       <div className="field-label">Description</div>
-                      <textarea value={selected.description} onChange={(e) => updateField(selectedIndex, 'description', e.target.value)} />
+                      <textarea
+                        value={selected.description}
+                        onChange={(e) => updateField(selectedIndex, 'description', e.target.value)}
+                        className={selectedErrors?.description ? 'input-error' : ''}
+                        aria-invalid={Boolean(selectedErrors?.description)}
+                        aria-describedby={selectedErrors?.description ? errorIdFor('description') : undefined}
+                      />
+                      {selectedErrors?.description && (
+                        <div className="field-error-message" id={errorIdFor('description')}>
+                          {selectedErrors.description}
+                        </div>
+                      )}
                     </label>
 
-                    <label className="field">
+                    <label className={`field ${selectedErrors?.allergens ? 'field-error-state' : ''}`}>
                       <div className="field-label">Allergens</div>
-                      <textarea value={selected.allergens} onChange={(e) => updateField(selectedIndex, 'allergens', e.target.value)} />
+                      <textarea
+                        value={selected.allergens}
+                        onChange={(e) => updateField(selectedIndex, 'allergens', e.target.value)}
+                        className={selectedErrors?.allergens ? 'input-error' : ''}
+                        aria-invalid={Boolean(selectedErrors?.allergens)}
+                        aria-describedby={selectedErrors?.allergens ? errorIdFor('allergens') : undefined}
+                      />
+                      {selectedErrors?.allergens && (
+                        <div className="field-error-message" id={errorIdFor('allergens')}>
+                          {selectedErrors.allergens}
+                        </div>
+                      )}
                     </label>
 
-                    <label className="field-inline">
+                    <label className={`field-inline ${selectedErrors?.price ? 'field-error-state' : ''}`}>
                       <div className="field-label">Set Price</div>
                       <input
                         type="text"
@@ -284,7 +394,15 @@ export default function UpdateMenu() {
                         onKeyDown={handlePriceKeyDown}
                         onBlur={() => handlePriceBlur(selectedIndex)}
                         placeholder="0.00"
+                        className={selectedErrors?.price ? 'input-error' : ''}
+                        aria-invalid={Boolean(selectedErrors?.price)}
+                        aria-describedby={selectedErrors?.price ? errorIdFor('price') : undefined}
                       />
+                      {selectedErrors?.price && (
+                        <div className="field-error-message" id={errorIdFor('price')}>
+                          {selectedErrors.price}
+                        </div>
+                      )}
                     </label>
 
                     <div className="image-uploader">
@@ -309,14 +427,40 @@ export default function UpdateMenu() {
                       </div>
                     </div>
 
-                    <div className="availability">
-                      <button className={`pill ${selected.available ? 'active' : ''}`} onClick={() => updateField(selectedIndex, 'available', true)}>AVAILABLE</button>
-                      <button className={`pill ${!selected.available ? 'active' : ''}`} onClick={() => updateField(selectedIndex, 'available', false)}>UNAVAILABLE</button>
+                    <div className={`availability ${selectedErrors?.available ? 'field-error-state' : ''}`}>
+                      <button
+                        className={`pill ${selected.available ? 'active' : ''}`}
+                        onClick={() => updateField(selectedIndex, 'available', true)}
+                        aria-pressed={selected.available === true}
+                        aria-describedby={selectedErrors?.available ? errorIdFor('available') : undefined}
+                      >
+                        AVAILABLE
+                      </button>
+                      <button
+                        className={`pill ${!selected.available ? 'active' : ''}`}
+                        onClick={() => updateField(selectedIndex, 'available', false)}
+                        aria-pressed={selected.available === false}
+                        aria-describedby={selectedErrors?.available ? errorIdFor('available') : undefined}
+                      >
+                        UNAVAILABLE
+                      </button>
                     </div>
+                    {selectedErrors?.available && (
+                      <div className="field-error-message" id={errorIdFor('available')}>
+                        {selectedErrors.available}
+                      </div>
+                    )}
 
                     <div className="editor-actions">
                       <button className="btn-delete" onClick={() => handleDelete(selectedIndex)} disabled={saving}>DELETE</button>
-                      <button className="btn-save" onClick={() => handleSave(selectedIndex)} disabled={saving}>{saving ? 'Saving...' : 'SAVE'}</button>
+                      <button
+                        className="btn-save"
+                        onClick={() => handleSave(selectedIndex)}
+                        disabled={saving || hasErrors}
+                        aria-disabled={saving || hasErrors}
+                      >
+                        {saving ? 'Saving...' : hasErrors ? 'Fix errors to save' : 'SAVE'}
+                      </button>
                     </div>
                   </div>
                 ) : (
