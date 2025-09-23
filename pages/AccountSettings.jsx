@@ -3,6 +3,7 @@ import Sidebar from '../components/Sidebar';
 import DatabaseInterface from '../db/DatabaseInterface';
 import RestaurantSessionInterface from '../db/RestaurantSessionInterface';
 import './AccountSettings.css';
+import { validateEmail, validatePhone, validateContactPerson } from '../utils/validation';
 
 /* ---------- time helpers ---------- */
 
@@ -34,6 +35,12 @@ function generateTimeOptions() {
 
 const timeOptions = generateTimeOptions();
 
+const fieldValidators = {
+  phone: validatePhone,
+  email: validateEmail,
+  contactPerson: validateContactPerson,
+};
+
 function timeValueToMinutes(val) {
   // val: "HH:MM" or "24:00"
   if (val === '24:00') return 24 * 60;
@@ -49,15 +56,60 @@ export default function AccountSettings() {
   const [savedSettings, setSavedSettings] = useState(null); // last-saved values from session store
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [fieldErrors, setFieldErrors] = useState({
+    phone: null,
+    email: null,
+    contactPerson: null,
+  });
   const fileRef = useRef(null);
 
   useEffect(() => {
     DatabaseInterface.getRestaurantInfo().then((info) => setRestaurantInfo(info)).catch(() => {});
     RestaurantSessionInterface.getSettings().then((s) => {
-      setSettings(s);
-      setSavedSettings(s); // this captures what is currently saved (from DB/session)
+      const normalized = normalizeSettingsObject(s);
+      setSettings(normalized);
+      setSavedSettings(normalized); // this captures what is currently saved (from DB/session)
+      setFieldErrors({ phone: null, email: null, contactPerson: null });
     });
   }, []);
+
+  function normalizeFieldValue(fieldKey, value) {
+    if (fieldKey === 'phone') {
+      return String(value ?? '').replace(/[^0-9]/g, '');
+    }
+    if (fieldKey === 'email' || fieldKey === 'contactPerson') {
+      return String(value ?? '').trim();
+    }
+    return value;
+  }
+
+  function normalizeSettingsObject(data) {
+    if (!data) return data;
+    return {
+      ...data,
+      phone: normalizeFieldValue('phone', data.phone),
+      email: normalizeFieldValue('email', data.email),
+      contactPerson: normalizeFieldValue('contactPerson', data.contactPerson),
+    };
+  }
+
+  function runValidation(fieldKey, value) {
+    const validator = fieldValidators[fieldKey];
+    if (!validator) return null;
+    return validator(value);
+  }
+
+  function handleFieldChange(fieldKey, rawValue) {
+    const normalizedValue = normalizeFieldValue(fieldKey, rawValue);
+    setFieldErrors((prevErrors) => ({
+      ...prevErrors,
+      [fieldKey]: runValidation(fieldKey, normalizedValue),
+    }));
+    setSettings((prev) => {
+      if (!prev) return prev;
+      return { ...prev, [fieldKey]: normalizedValue };
+    });
+  }
 
   /* ---------- picture handling (session-only) ---------- */
 
@@ -126,15 +178,23 @@ export default function AccountSettings() {
       alert('Settings not loaded.');
       return;
     }
-    if (String(savedSettings[fieldKey] ?? '') === String(value ?? '')) {
+    const normalizedValue = normalizeFieldValue(fieldKey, value);
+    const validationError = runValidation(fieldKey, normalizedValue);
+    if (validationError) {
+      setFieldErrors((prev) => ({ ...prev, [fieldKey]: validationError }));
+      return;
+    }
+    if (String(savedSettings[fieldKey] ?? '') === String(normalizedValue ?? '')) {
       alert('No change detected — edit the field before confirming.');
       return;
     }
-    if (!window.confirm(`Confirm update ${fieldKey} -> "${value}"?`)) return;
-    const patch = { [fieldKey]: value };
+    if (!window.confirm(`Confirm update ${fieldKey} -> "${normalizedValue}"?`)) return;
+    const patch = { [fieldKey]: normalizedValue };
     RestaurantSessionInterface.updateSettings(patch).then((s) => {
-      setSettings(s);
-      setSavedSettings(s);
+      const normalized = normalizeSettingsObject(s);
+      setSettings(normalized);
+      setSavedSettings(normalized);
+      setFieldErrors((prev) => ({ ...prev, [fieldKey]: null }));
       alert(`${fieldKey} updated (session-only).`);
     });
   }
@@ -174,16 +234,29 @@ export default function AccountSettings() {
 
   function confirmSaveAll() {
     if (!window.confirm('Save all account settings?')) return;
+    const validations = ['phone', 'email', 'contactPerson'].reduce((acc, key) => {
+      const value = normalizeFieldValue(key, settings[key]);
+      const err = runValidation(key, value);
+      if (err) acc[key] = err;
+      return acc;
+    }, {});
+    if (Object.keys(validations).length) {
+      setFieldErrors((prev) => ({ ...prev, ...validations }));
+      alert('Please resolve the highlighted errors before saving.');
+      return;
+    }
     const payload = {
-      phone: settings.phone,
-      email: settings.email,
-      contactPerson: settings.contactPerson,
+      phone: normalizeFieldValue('phone', settings.phone),
+      email: normalizeFieldValue('email', settings.email),
+      contactPerson: normalizeFieldValue('contactPerson', settings.contactPerson),
       days: settings.days,
       imageUrl: settings.imageUrl || null,
     };
     RestaurantSessionInterface.updateSettings(payload).then((s) => {
-      setSettings(s);
-      setSavedSettings(s);
+      const normalized = normalizeSettingsObject(s);
+      setSettings(normalized);
+      setSavedSettings(normalized);
+      setFieldErrors({ phone: null, email: null, contactPerson: null });
       alert('All settings saved (session-only).');
     });
   }
@@ -208,6 +281,9 @@ export default function AccountSettings() {
   const phoneChanged = String(settings.phone ?? '') !== String(savedSettings?.phone ?? '');
   const emailChanged = String(settings.email ?? '') !== String(savedSettings?.email ?? '');
   const contactChanged = String(settings.contactPerson ?? '') !== String(savedSettings?.contactPerson ?? '');
+  const phoneInvalid = !!runValidation('phone', settings.phone);
+  const emailInvalid = !!runValidation('email', settings.email);
+  const contactInvalid = !!runValidation('contactPerson', settings.contactPerson);
 
   return (
     <div className="app-root account-settings-root">
@@ -248,49 +324,61 @@ export default function AccountSettings() {
                 <div className="setting-block">
                   <div className="setting-title">Change Contact Info</div>
                   <div className="mini-row">
-                    <input
-                      type="tel"
-                      placeholder="Phone number"
-                      inputMode="tel"
-                      value={settings.phone}
-                      onChange={(e) => setSettings(prev => ({ ...prev, phone: (String(e.target.value || '')).replace(/[^0-9]/g, '') }))}
-                    />
+                    <div className="mini-field">
+                      <input
+                        type="tel"
+                        placeholder="Phone number"
+                        inputMode="tel"
+                        value={settings.phone}
+                        onChange={(e) => handleFieldChange('phone', e.target.value)}
+                        aria-invalid={Boolean(fieldErrors.phone)}
+                      />
+                      {fieldErrors.phone && <div className="input-helper error">{fieldErrors.phone}</div>}
+                    </div>
                     <button
                       className="control-btn"
                       onClick={() => confirmFieldChange('phone', settings.phone)}
-                      disabled={!phoneChanged}
+                      disabled={!phoneChanged || phoneInvalid}
                     >
                       Confirm Phone
                     </button>
                   </div>
 
                   <div className="mini-row">
-                    <input
-                      type="email"
-                      placeholder="Email address"
-                      value={settings.email}
-                      onChange={(e) => setSettings(prev => ({ ...prev, email: e.target.value }))}
-                    />
+                    <div className="mini-field">
+                      <input
+                        type="email"
+                        placeholder="Email address"
+                        value={settings.email}
+                        onChange={(e) => handleFieldChange('email', e.target.value)}
+                        aria-invalid={Boolean(fieldErrors.email)}
+                      />
+                      {fieldErrors.email && <div className="input-helper error">{fieldErrors.email}</div>}
+                    </div>
                     <button
                       className="control-btn"
                       onClick={() => confirmFieldChange('email', settings.email)}
-                      disabled={!emailChanged}
+                      disabled={!emailChanged || emailInvalid}
                     >
                       Confirm Email
                     </button>
                   </div>
 
                   <div className="mini-row">
-                    <input
-                      type="text"
-                      placeholder="Contact person"
-                      value={settings.contactPerson}
-                      onChange={(e) => setSettings(prev => ({ ...prev, contactPerson: e.target.value }))}
-                    />
+                    <div className="mini-field">
+                      <input
+                        type="text"
+                        placeholder="Contact person"
+                        value={settings.contactPerson}
+                        onChange={(e) => handleFieldChange('contactPerson', e.target.value)}
+                        aria-invalid={Boolean(fieldErrors.contactPerson)}
+                      />
+                      {fieldErrors.contactPerson && <div className="input-helper error">{fieldErrors.contactPerson}</div>}
+                    </div>
                     <button
                       className="control-btn"
                       onClick={() => confirmFieldChange('contactPerson', settings.contactPerson)}
-                      disabled={!contactChanged}
+                      disabled={!contactChanged || contactInvalid}
                     >
                       Confirm Contact
                     </button>
