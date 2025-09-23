@@ -10,6 +10,7 @@ import AccountSettings from './pages/AccountSettings';
 import Withdraw from './pages/Withdraw';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
+import OwnerRegistration from './pages/OwnerRegistration';
 
 export default function App() {
   const { loggedIn } = useAuth();
@@ -31,7 +32,7 @@ export default function App() {
   }, [navigate]);
 
   const handleOwnerRegister = useCallback(() => {
-    navigate('/login?mode=register');
+    navigate('/register');
   }, [navigate]);
 
   const landingProps = {
@@ -44,6 +45,7 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<OwnerRegistration />} />
 
       <Route
         path="/"
