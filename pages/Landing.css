@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;700;800&display=swap');
+
+body.fd-landing-active {
+  margin: 0;
+  padding: 0;
+  background: #000;
+  overflow-x: hidden;
+}
+
+.fd-heroPage,
+.fd-heroPage * {
+  box-sizing: border-box;
+}
+
+.fd-heroPage {
+  position: relative;
+  min-height: 100vh;
+  width: 100vw;
+  font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background: url('/assets/LandingPage.png') center/cover no-repeat;
+  color: #111;
+  --header-h: 88px;
+  --logo-h: 82px;
+  --pink-200: #f3c4c4;
+  --pink-300: #eea7a7;
+  --pink-400: #e68c8c;
+  --gray-400: #9ca3af;
+  --gray-500: #6b7280;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.fd-heroPage::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.25);
+  z-index: 0;
+}
+
+.fd-heroPage > * {
+  position: relative;
+  z-index: 2;
+}
+
+.fd-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--header-h);
+  padding: 6px 32px;
+  background: #f3c4c4;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  box-sizing: border-box;
+  overflow: visible;
+}
+
+.fd-logo img {
+  height: calc(var(--header-h) + 120px);
+  width: auto;
+  display: block;
+}
+
+.fd-nav {
+  display: flex;
+  gap: 16px;
+}
+
+.fd-hero {
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: calc(var(--header-h) + 56px) 24px 64px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - var(--header-h));
+  gap: 28px;
+}
+
+.fd-title {
+  margin: 0 0 16px;
+  color: #fff;
+  font-weight: 800;
+  font-size: clamp(36px, 6vw, 64px);
+  line-height: 1.1;
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+}
+
+.fd-searchRow {
+  display: flex;
+  justify-content: center;
+  align-items: stretch;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.fd-inputWrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #fff;
+  border: 2px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.18);
+  height: 64px;
+  padding: 0 18px;
+  width: 820px;
+  max-width: 92vw;
+  min-width: 320px;
+}
+
+.fd-inputWrap input {
+  border: 0;
+  outline: 0;
+  background: transparent;
+  width: 100%;
+  font-size: 20px;
+  color: #111;
+}
+
+.fd-inputWrap input::placeholder {
+  color: var(--gray-400);
+}
+
+.fd-pin,
+.fd-arrow {
+  width: 28px;
+  height: 28px;
+}
+
+.fd-pin {
+  flex-shrink: 0;
+}
+
+.fd-register {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.fd-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 9999px;
+  padding: 0 28px;
+  background: var(--pink-400);
+  color: #fff;
+  font-weight: 700;
+  font-size: 20px;
+  letter-spacing: 0.2px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.18);
+  cursor: pointer;
+  transition: 0.15s background, 0.15s transform;
+  height: 56px;
+}
+
+#fd-search.fd-btn {
+  font-weight: 800;
+  padding: 0 26px;
+}
+
+#fd-register-owner.fd-btn {
+  height: 52px;
+  padding: 0 24px;
+}
+
+.fd-btn:hover {
+  background: #de7e7e;
+}
+
+.fd-btn:active {
+  transform: scale(0.98);
+}
+
+.fd-btn[disabled] {
+  background: var(--pink-200);
+  color: rgba(255, 255, 255, 0.6);
+  cursor: not-allowed;
+}
+
+.fd-btn--pale {
+  background: var(--pink-300);
+}
+
+.fd-btn--pale:hover {
+  background: var(--pink-400);
+}
+
+.fd-btn--primary {
+  background: var(--pink-400);
+}
+
+.fd-btn--light {
+  background: rgba(255, 255, 255, 0.92);
+  color: #111;
+}
+
+.fd-btn--light:hover {
+  background: #fff;
+}
+
+.fd-btn--light:active {
+  transform: scale(0.98);
+}
+
+.fd-nav button {
+  font-size: 16px;
+  height: 44px;
+  padding: 0 20px;
+}
+
+.fd-hero p {
+  color: rgba(255, 255, 255, 0.9);
+  max-width: 580px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 640px) {
+  .fd-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+    height: auto;
+    padding: 24px;
+  }
+
+  .fd-logo img {
+    height: 84px;
+  }
+
+  .fd-nav {
+    width: 100%;
+    justify-content: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .fd-nav button {
+    flex: 1 1 auto;
+  }
+
+  .fd-hero {
+    padding-top: 180px;
+  }
+}
