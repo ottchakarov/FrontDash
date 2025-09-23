@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Sidebar from '../components/Sidebar';
-import DatabaseInterface from '../db/DatabaseInterface';
-import MenuSessionInterface from '../db/MenuSessionInterface';
+import Sidebar from '../../components/Sidebar';
+import DatabaseInterface from '../../db/DatabaseInterface';
+import MenuSessionInterface from '../../db/MenuSessionInterface';
 import './UpdateMenu.css';
 
 export default function UpdateMenu() {

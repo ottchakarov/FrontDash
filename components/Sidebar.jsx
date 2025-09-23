@@ -72,10 +72,10 @@ export default function Sidebar({ restaurantName: propName, status: propStatus }
         </div>
 
         <nav className="nav-list" aria-label="Sidebar links">
-          <NavLink to="/" className={linkClass}>Restaurant Home Page</NavLink>
-          <NavLink to="/update-menu" className={linkClass}>Update Food Menu</NavLink>
-          <NavLink to="/account-settings" className={linkClass}>Account Settings</NavLink>
-          <NavLink to="/withdraw" className={linkClass}>Withdraw From FrontDash</NavLink>
+          <NavLink to="/owner" end className={linkClass}>Restaurant Home Page</NavLink>
+          <NavLink to="/owner/update-menu" className={linkClass}>Update Food Menu</NavLink>
+          <NavLink to="/owner/account-settings" className={linkClass}>Account Settings</NavLink>
+          <NavLink to="/owner/withdraw" className={linkClass}>Withdraw From FrontDash</NavLink>
         </nav>
 
         <div className="logout-wrap">
