@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import DatabaseInterface from '../db/DatabaseInterface';
-import RestaurantSessionInterface from '../db/RestaurantSessionInterface';
+import Sidebar from '../../components/Sidebar';
+import DatabaseInterface from '../../db/DatabaseInterface';
+import RestaurantSessionInterface from '../../db/RestaurantSessionInterface';
 import './AccountSettings.css';
 
 /* ---------- time helpers ---------- */

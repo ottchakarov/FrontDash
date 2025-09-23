@@ -1,38 +1,40 @@
 // src/App.js
 import React, { useCallback } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
-import { useAuth } from './contexts/AuthContext';
+import { ROLE_HOME_PATH, useAuth } from './contexts/AuthContext';
 
-import HomeLanding from './pages/HomeLanding';
-import UpdateMenu from './pages/UpdateMenu';
-import AccountSettings from './pages/AccountSettings';
-import Withdraw from './pages/Withdraw';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
-import OwnerRegistration from './pages/OwnerRegistration';
+import CustomerDashboard from './pages/customer/CustomerDashboard';
+import StaffDashboard from './pages/staff/StaffDashboard';
+import AdminDashboard from './pages/admin/AdminDashboard';
+import OwnerHome from './pages/owner/OwnerHome';
+import UpdateMenu from './pages/owner/UpdateMenu';
+import AccountSettings from './pages/owner/AccountSettings';
+import Withdraw from './pages/owner/Withdraw';
 
 export default function App() {
-  const { loggedIn } = useAuth();
+  const { loggedIn, role } = useAuth();
   const navigate = useNavigate();
 
   const handleSearch = useCallback(
     (address) => {
-      navigate('/login', { state: { address } });
+      navigate('/login?role=customer', { state: { address } });
     },
     [navigate]
   );
 
   const handleRestaurantLogin = useCallback(() => {
-    navigate('/login');
+    navigate('/login?role=owner');
   }, [navigate]);
 
   const handleStaffLogin = useCallback(() => {
-    navigate('/login?mode=staff');
+    navigate('/login?role=staff');
   }, [navigate]);
 
   const handleOwnerRegister = useCallback(() => {
-    navigate('/register');
+    navigate('/login?role=owner');
   }, [navigate]);
 
   const landingProps = {
@@ -42,62 +44,86 @@ export default function App() {
     onOwnerRegister: handleOwnerRegister,
   };
 
+  const authedLanding = ROLE_HOME_PATH[role] ?? '/owner';
+
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
-      <Route path="/register" element={<OwnerRegistration />} />
 
       <Route
         path="/"
         element={
-          loggedIn ? (
-            <ProtectedRoute>
-              <HomeLanding />
-            </ProtectedRoute>
-          ) : (
-            <Landing {...landingProps} />
-          )
+          loggedIn ? <Navigate to={authedLanding} replace /> : <Landing {...landingProps} />
         }
       />
 
       <Route
-        path="/update-menu"
+        path="/customer"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['customer']}>
+            <CustomerDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/staff"
+        element={
+          <ProtectedRoute allowedRoles={['staff']}>
+            <StaffDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/admin"
+        element={
+          <ProtectedRoute allowedRoles={['admin']}>
+            <AdminDashboard />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/owner"
+        element={
+          <ProtectedRoute allowedRoles={['owner']}>
+            <OwnerHome />
+          </ProtectedRoute>
+        }
+      />
+
+      <Route
+        path="/owner/update-menu"
+        element={
+          <ProtectedRoute allowedRoles={['owner']}>
             <UpdateMenu />
           </ProtectedRoute>
         }
       />
 
       <Route
-        path="/account-settings"
+        path="/owner/account-settings"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['owner']}>
             <AccountSettings />
           </ProtectedRoute>
         }
       />
 
       <Route
-        path="/withdraw"
+        path="/owner/withdraw"
         element={
-          <ProtectedRoute>
+          <ProtectedRoute allowedRoles={['owner']}>
             <Withdraw />
           </ProtectedRoute>
         }
       />
 
-      {/* fallback: when logged in -> home; otherwise -> landing */}
       <Route
         path="*"
         element={
-          loggedIn ? (
-            <ProtectedRoute>
-              <HomeLanding />
-            </ProtectedRoute>
-          ) : (
-            <Landing {...landingProps} />
-          )
+          loggedIn ? <Navigate to={authedLanding} replace /> : <Navigate to="/" replace />
         }
       />
     </Routes>

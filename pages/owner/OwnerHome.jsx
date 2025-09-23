@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import Statistics from '../components/Statistics';
-import DatabaseInterface from '../db/DatabaseInterface';
+import Sidebar from '../../components/Sidebar';
+import Statistics from '../../components/Statistics';
+import DatabaseInterface from '../../db/DatabaseInterface';
 
-export default function HomeLanding() {
+export default function OwnerHome() {
   const [restaurantInfo, setRestaurantInfo] = useState(null);
   const [stats, setStats] = useState(null);
 

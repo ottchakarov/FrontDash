@@ -1,0 +1,366 @@
+.admin-dashboard {
+  padding: clamp(24px, 4vw, 48px);
+  background: linear-gradient(145deg, #fff7ed 0%, #fde8f3 45%, #fef2f2 100%);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.admin-header {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: flex-start;
+}
+
+.admin-eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-weight: 700;
+  color: #c2410c;
+  margin-bottom: 6px;
+}
+
+.admin-header h1 {
+  font-size: clamp(32px, 4.6vw, 48px);
+  margin: 0 0 10px;
+  color: #111827;
+}
+
+.admin-subtitle {
+  margin: 0;
+  max-width: 620px;
+  color: #475569;
+  line-height: 1.7;
+  font-size: clamp(16px, 2.5vw, 18px);
+}
+
+.admin-auto-generate {
+  border: none;
+  border-radius: 999px;
+  padding: 12px 22px;
+  font-weight: 700;
+  background: #ef4444;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 18px 32px rgba(239, 68, 68, 0.25);
+  align-self: center;
+  transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+}
+
+.admin-auto-generate:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 22px 40px rgba(190, 24, 93, 0.22);
+}
+
+.admin-auto-generate.is-complete {
+  background: #16a34a;
+  box-shadow: 0 18px 32px rgba(22, 163, 74, 0.25);
+}
+
+.admin-banner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 237, 213, 0.85);
+  border: 1px solid rgba(251, 191, 36, 0.4);
+  padding: 14px 18px;
+  border-radius: 18px;
+  color: #7c2d12;
+}
+
+.text-button {
+  border: none;
+  background: transparent;
+  color: #be123c;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 12px;
+}
+
+.text-button:hover {
+  background: rgba(244, 114, 182, 0.12);
+}
+
+.admin-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 18px;
+}
+
+.admin-summary-card {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 18px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 12px 24px rgba(15, 23, 42, 0.12);
+}
+
+.admin-summary-card.accent {
+  background: rgba(254, 226, 226, 0.85);
+}
+
+.admin-summary-card.warning {
+  background: rgba(254, 243, 199, 0.95);
+}
+
+.admin-summary-card__label {
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: #7f1d1d;
+}
+
+.admin-summary-card__value {
+  font-size: clamp(28px, 4vw, 36px);
+  font-weight: 800;
+  color: #111827;
+}
+
+.admin-panels {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.admin-panel {
+  background: rgba(255, 255, 255, 0.92);
+  border-radius: 24px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  box-shadow: 0 18px 36px rgba(15, 23, 42, 0.14);
+}
+
+.admin-panel__header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: flex-start;
+}
+
+.admin-panel__header h2 {
+  margin: 0;
+  font-size: 22px;
+  color: #0f172a;
+}
+
+.admin-panel__header p {
+  margin: 4px 0 0;
+  color: #475569;
+  line-height: 1.6;
+}
+
+.panel-help {
+  align-self: flex-start;
+  border: none;
+  background: rgba(14, 116, 144, 0.09);
+  color: #0f172a;
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+}
+
+.panel-help:hover {
+  background: rgba(14, 165, 233, 0.15);
+}
+
+.admin-help-card {
+  background: rgba(219, 234, 254, 0.75);
+  border-radius: 18px;
+  padding: 16px 20px;
+  color: #0f172a;
+  line-height: 1.6;
+}
+
+.admin-help-card h3 {
+  margin-top: 0;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-help-card ul {
+  margin: 10px 0 0 18px;
+  padding: 0;
+}
+
+.admin-help-card li {
+  margin-bottom: 6px;
+}
+
+.admin-approvals,
+.admin-withdrawals,
+.admin-roster {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.admin-approval-card {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 18px;
+  padding: 18px 20px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.admin-approval-card h3 {
+  margin: 0;
+  color: #111827;
+}
+
+.admin-approval-card p {
+  margin: 6px 0 0;
+  color: #475569;
+}
+
+.admin-approval-meta {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: #9ca3af;
+}
+
+.admin-approval-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  align-items: flex-end;
+}
+
+.chip {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 16px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 12px 20px rgba(15, 23, 42, 0.12);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.chip:hover {
+  transform: translateY(-1px);
+}
+
+.chip.success {
+  background: rgba(74, 222, 128, 0.85);
+  color: #14532d;
+}
+
+.chip.danger {
+  background: rgba(248, 113, 113, 0.85);
+  color: #7f1d1d;
+}
+
+.admin-withdraw-card {
+  border-radius: 18px;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  background: rgba(255, 255, 255, 0.95);
+  overflow: hidden;
+}
+
+.admin-withdraw-card__header {
+  width: 100%;
+  background: transparent;
+  border: none;
+  display: flex;
+  justify-content: space-between;
+  padding: 16px 18px;
+  font-weight: 600;
+  color: #111827;
+  cursor: pointer;
+}
+
+.admin-withdraw-card__meta {
+  font-size: 13px;
+  color: #64748b;
+}
+
+.admin-withdraw-card__body {
+  padding: 0 18px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  color: #475569;
+}
+
+.admin-withdraw-card__note {
+  margin: 0;
+  line-height: 1.6;
+}
+
+.admin-withdraw-card__contact {
+  margin: 0;
+  font-size: 14px;
+  color: #0f172a;
+}
+
+.admin-roster-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  padding: 14px 18px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+}
+
+.admin-roster-item__name {
+  margin: 0;
+  font-weight: 700;
+  color: #111827;
+}
+
+.admin-roster-item__role {
+  margin: 4px 0 0;
+  color: #475569;
+  font-size: 14px;
+}
+
+.admin-driver-footer {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  color: #475569;
+}
+
+@media (max-width: 920px) {
+  .admin-approval-card,
+  .admin-approval-actions {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .admin-approval-actions {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .admin-dashboard {
+    padding: 24px 16px 48px;
+  }
+
+  .admin-panels {
+    grid-template-columns: 1fr;
+  }
+}
