@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import DatabaseInterface from '../db/DatabaseInterface'; // existing in your app
-import WithdrawSessionInterface from '../db/WithdrawSessionInterface';
+import Sidebar from '../../components/Sidebar';
+import DatabaseInterface from '../../db/DatabaseInterface'; // existing in your app
+import WithdrawSessionInterface from '../../db/WithdrawSessionInterface';
 import './Withdraw.css';
 
 export default function Withdraw() {

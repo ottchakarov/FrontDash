@@ -1,0 +1,122 @@
+.login-page {
+  min-height: 100vh;
+  padding: 48px clamp(24px, 6vw, 72px);
+  background: linear-gradient(135deg, #fce4ec 0%, #fde2d0 45%, #fbe9e7 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+.login-header {
+  max-width: 720px;
+}
+
+.login-header h1 {
+  font-size: clamp(32px, 5vw, 48px);
+  margin-bottom: 12px;
+  color: #2f0f0f;
+}
+
+.login-header p {
+  font-size: clamp(16px, 2.2vw, 20px);
+  color: #4a1f1f;
+  line-height: 1.6;
+}
+
+.persona-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.persona-card {
+  position: relative;
+  background: #ffffff;
+  border-radius: 18px;
+  padding: 24px;
+  box-shadow: 0 18px 35px rgba(15, 23, 42, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  border: 1px solid rgba(148, 81, 81, 0.15);
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.persona-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 24px 40px rgba(79, 36, 36, 0.18);
+}
+
+.persona-card.suggested::before {
+  content: 'Suggested';
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  background: #fda4af;
+  color: #831843;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  padding: 4px 10px;
+  border-radius: 999px;
+  text-transform: uppercase;
+  font-weight: 700;
+}
+
+.persona-card__header {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.persona-card__role {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #c2410c;
+}
+
+.persona-card__header h2 {
+  font-size: clamp(20px, 3vw, 28px);
+  color: #3d0c02;
+}
+
+.persona-card__description {
+  color: #5d1f1f;
+  line-height: 1.6;
+  flex-grow: 1;
+}
+
+.persona-card__cta {
+  align-self: flex-start;
+  background: #ef4444;
+  color: #fff;
+  border: none;
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+  transition: background 0.18s ease, transform 0.18s ease;
+}
+
+.persona-card__cta:hover {
+  background: #dc2626;
+  transform: translateY(-2px);
+}
+
+.persona-card__cta:focus-visible {
+  outline: 3px solid #fb7185;
+  outline-offset: 3px;
+}
+
+@media (max-width: 640px) {
+  .login-page {
+    padding-top: 32px;
+  }
+
+  .persona-card {
+    padding: 20px;
+  }
+}
