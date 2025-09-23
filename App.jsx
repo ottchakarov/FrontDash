@@ -1,6 +1,6 @@
 // src/App.js
 import React, { useCallback } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, Navigate } from 'react-router-dom';
 import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './contexts/AuthContext';
 
@@ -10,6 +10,9 @@ import AccountSettings from './pages/AccountSettings';
 import Withdraw from './pages/Withdraw';
 import Login from './pages/Login';
 import Landing from './pages/Landing';
+import SelectRestaurant from './pages/customer/SelectRestaurant';
+import Menu from './pages/customer/Menu';
+import Checkout from './pages/customer/Checkout';
 
 export default function App() {
   const { loggedIn } = useAuth();
@@ -17,7 +20,7 @@ export default function App() {
 
   const handleSearch = useCallback(
     (address) => {
-      navigate('/login', { state: { address } });
+      navigate('/customer/select', { state: { address } });
     },
     [navigate]
   );
@@ -44,6 +47,11 @@ export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
+
+      <Route path="/customer" element={<Navigate to="/customer/select" replace />} />
+      <Route path="/customer/select" element={<SelectRestaurant />} />
+      <Route path="/customer/menu" element={<Menu />} />
+      <Route path="/customer/checkout" element={<Checkout />} />
 
       <Route
         path="/"
