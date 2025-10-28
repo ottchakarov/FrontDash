@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 /**
@@ -10,25 +10,51 @@ import { useNavigate } from 'react-router-dom';
  */
 const AuthContext = createContext();
 
+export const ROLE_HOME_PATH = {
+  customer: '/restaurants',
+  staff: '/staff',
+  admin: '/admin',
+  owner: '/owner',
+};
+
 export function AuthProvider({ children }) {
-  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState(null);
   const navigate = useNavigate();
 
-  function login() {
-    setLoggedIn(true);
-    navigate('/', { replace: true });
+  function login(role = 'owner', options = {}) {
+    const nextRole = role ?? 'owner';
+    const nextUser = { role: nextRole };
+    setUser(nextUser);
+    const destination = options.redirectTo ?? ROLE_HOME_PATH[nextRole] ?? '/';
+    navigate(destination, { replace: true });
   }
 
   function logout() {
-    setLoggedIn(false);
+    setUser(null);
     navigate('/login', { replace: true });
   }
 
-  return (
-    <AuthContext.Provider value={{ loggedIn, login, logout }}>
-      {children}
-    </AuthContext.Provider>
+  function setRole(role) {
+    setUser((prev) => {
+      if (!role) return null;
+      return { ...(prev ?? {}), role };
+    });
+  }
+
+  const value = useMemo(
+    () => ({
+      user,
+      role: user?.role ?? null,
+      loggedIn: Boolean(user),
+      login,
+      logout,
+      setRole,
+      defaultRouteForRole: (roleKey) => ROLE_HOME_PATH[roleKey] ?? '/',
+    }),
+    [user]
   );
+
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
 export function useAuth() {

@@ -1,7 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
-import Sidebar from '../components/Sidebar';
-import DatabaseInterface from '../db/DatabaseInterface';
-import MenuSessionInterface from '../db/MenuSessionInterface';
+import AppHeader from '../../components/AppHeader';
+import Sidebar from '../../components/Sidebar';
+import DatabaseInterface from '../../db/DatabaseInterface';
+import MenuSessionInterface from '../../db/MenuSessionInterface';
 import './UpdateMenu.css';
 
 export default function UpdateMenu() {
@@ -9,6 +10,7 @@ export default function UpdateMenu() {
   const [items, setItems] = useState([]);
   const [selectedIndex, setSelectedIndex] = useState(null);
   const [saving, setSaving] = useState(false);
+  const [itemErrors, setItemErrors] = useState({});
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -38,7 +40,9 @@ export default function UpdateMenu() {
   function updateField(idx, key, value) {
     setItems((prev) => {
       const copy = [...prev];
-      copy[idx] = { ...copy[idx], [key]: value };
+      const updated = { ...copy[idx], [key]: value };
+      copy[idx] = updated;
+      syncItemErrors(updated);
       return copy;
     });
   }
@@ -74,6 +78,48 @@ export default function UpdateMenu() {
   }
 
   /* ---------- Price input helpers ---------- */
+
+  function validateMenuItem(item) {
+    const errors = {
+      name: '',
+      description: '',
+      price: '',
+    };
+
+    if (!item?.name?.trim()) {
+      errors.name = 'Food name is required.';
+    }
+
+    if (!item?.description?.trim()) {
+      errors.description = 'Description is required.';
+    }
+
+    const priceString = String(item?.price ?? '').trim();
+    const priceValue = Number(priceString);
+    if (!priceString) {
+      errors.price = 'Price is required.';
+    } else if (!Number.isFinite(priceValue) || priceValue <= 0) {
+      errors.price = 'Enter a valid price greater than 0 (e.g., 9.99).';
+    }
+
+    return errors;
+  }
+
+  function syncItemErrors(item) {
+    if (!item?.id) {
+      return;
+    }
+    setItemErrors((prev) => {
+      const validation = validateMenuItem(item);
+      const hasIssues = Object.values(validation).some(Boolean);
+      if (!hasIssues) {
+        if (!(item.id in prev)) return prev;
+        const { [item.id]: _removed, ...rest } = prev;
+        return rest;
+      }
+      return { ...prev, [item.id]: validation };
+    });
+  }
 
   // Keep only digits and a single decimal point; limit decimal places to 2
   function sanitizePriceString(s) {
@@ -136,9 +182,20 @@ export default function UpdateMenu() {
   /* ---------- Save/Delete ---------- */
 
   async function handleSave(idx) {
+    const currentItem = items[idx];
+    if (!currentItem) return;
+
+    const validation = validateMenuItem(currentItem);
+    const hasIssues = Object.values(validation).some(Boolean);
+    if (hasIssues) {
+      setItemErrors((prev) => ({ ...prev, [currentItem.id]: validation }));
+      alert('Please complete all required menu fields before saving.');
+      return;
+    }
+
     setSaving(true);
     try {
-      const toSave = { ...items[idx] };
+      const toSave = { ...currentItem };
       delete toSave.imageFile;
       delete toSave.imageUrl;
       const saved = await MenuSessionInterface.updateMenuItem(toSave.id, toSave);
@@ -147,6 +204,11 @@ export default function UpdateMenu() {
         const transient = { imageUrl: prev[idx]?.imageUrl ?? null, imageFile: prev[idx]?.imageFile ?? null };
         copy[idx] = { ...saved, ...transient };
         return copy;
+      });
+      setItemErrors((prev) => {
+        const next = { ...prev };
+        delete next[toSave.id];
+        return next;
       });
       alert('Saved (session-only). Images are in-memory only for this session.');
     } catch (err) {
@@ -172,6 +234,11 @@ export default function UpdateMenu() {
         else setSelectedIndex(Math.max(0, idx - 1));
         return copy;
       });
+      setItemErrors((prev) => {
+        if (!(id in prev)) return prev;
+        const { [id]: _removed, ...rest } = prev;
+        return rest;
+      });
     } catch (err) {
       console.error(err);
       alert('Delete failed.');
@@ -190,9 +257,12 @@ export default function UpdateMenu() {
   }, [items]);
 
   const selected = selectedIndex != null ? items[selectedIndex] : null;
+  const selectedErrors = selected ? itemErrors[selected.id] ?? {} : {};
 
   return (
-    <div className="app-root update-menu-root">
+    <>
+      <AppHeader />
+      <div className="app-root update-menu-root">
       <h1 className="page-title">
         {restaurantInfo?.name ? `Welcome to Your Food Menu Page for ${restaurantInfo.name}!` : 'Welcome To Your Account Page!'}
       </h1>
@@ -260,12 +330,23 @@ export default function UpdateMenu() {
                         value={selected.name}
                         onChange={(e) => updateField(selectedIndex, 'name', e.target.value)}
                         placeholder="Item name"
+                        aria-invalid={Boolean(selectedErrors.name)}
                       />
+                      {selectedErrors.name ? (
+                        <p className="field-error" role="alert">{selectedErrors.name}</p>
+                      ) : null}
                     </label>
 
                     <label className="field">
                       <div className="field-label">Description</div>
-                      <textarea value={selected.description} onChange={(e) => updateField(selectedIndex, 'description', e.target.value)} />
+                      <textarea
+                        value={selected.description}
+                        onChange={(e) => updateField(selectedIndex, 'description', e.target.value)}
+                        aria-invalid={Boolean(selectedErrors.description)}
+                      />
+                      {selectedErrors.description ? (
+                        <p className="field-error" role="alert">{selectedErrors.description}</p>
+                      ) : null}
                     </label>
 
                     <label className="field">
@@ -284,7 +365,11 @@ export default function UpdateMenu() {
                         onKeyDown={handlePriceKeyDown}
                         onBlur={() => handlePriceBlur(selectedIndex)}
                         placeholder="0.00"
+                        aria-invalid={Boolean(selectedErrors.price)}
                       />
+                      {selectedErrors.price ? (
+                        <p className="field-error" role="alert">{selectedErrors.price}</p>
+                      ) : null}
                     </label>
 
                     <div className="image-uploader">
@@ -329,6 +414,7 @@ export default function UpdateMenu() {
           </div>
         </main>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

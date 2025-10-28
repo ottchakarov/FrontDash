@@ -1,0 +1,146 @@
+.confirmation-page {
+  min-height: 100vh;
+  background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.18), rgba(14, 116, 144, 0.08));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+}
+
+.confirmation-card {
+  background: #ffffff;
+  border-radius: 24px;
+  padding: clamp(24px, 6vw, 48px);
+  max-width: 620px;
+  width: 100%;
+  box-shadow: 0 30px 60px rgba(30, 64, 175, 0.18);
+  display: grid;
+  gap: 28px;
+}
+
+.confirmation-card header {
+  text-align: center;
+  display: grid;
+  gap: 12px;
+}
+
+.confirmation-icon {
+  width: 60px;
+  height: 60px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #22c55e, #14b8a6);
+  color: #fff;
+  font-size: 30px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto;
+  font-weight: 700;
+}
+
+.confirmation-card h1 {
+  margin: 0;
+  font-size: clamp(28px, 4vw, 38px);
+  color: #0f172a;
+}
+
+.confirmation-card p {
+  margin: 0;
+  color: #475569;
+  font-size: 16px;
+}
+
+.confirmation-section {
+  display: grid;
+  gap: 12px;
+}
+
+.confirmation-section h2 {
+  margin: 0;
+  font-size: 18px;
+  color: #0f172a;
+}
+
+.confirmation-meta {
+  color: #6366f1;
+  font-weight: 600;
+}
+
+.confirmation-items {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: grid;
+  gap: 8px;
+  font-size: 15px;
+  color: #0f172a;
+}
+
+.confirmation-items li {
+  display: flex;
+  justify-content: space-between;
+}
+
+.confirmation-totals {
+  display: grid;
+  gap: 10px;
+}
+
+.confirmation-totals div {
+  display: flex;
+  justify-content: space-between;
+  font-size: 15px;
+}
+
+.confirmation-totals dt {
+  color: #64748b;
+}
+
+.confirmation-totals dd {
+  margin: 0;
+  color: #0f172a;
+}
+
+.confirmation-totals .total dt,
+.confirmation-totals .total dd {
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.note {
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.confirmation-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+}
+
+.confirmation-actions button {
+  border-radius: 999px;
+  padding: 10px 22px;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  border: none;
+}
+
+.confirmation-actions .primary {
+  background: linear-gradient(135deg, #6366f1, #ec4899);
+  color: #fff;
+  box-shadow: 0 22px 36px rgba(79, 70, 229, 0.25);
+}
+
+.confirmation-actions .secondary {
+  background: rgba(148, 163, 184, 0.16);
+  color: #0f172a;
+}
+
+@media (max-width: 480px) {
+  .confirmation-card {
+    padding: 32px 20px;
+  }
+}

@@ -1,8 +1,12 @@
 import React, { useEffect, useRef, useState } from 'react';
-import Sidebar from '../components/Sidebar';
-import DatabaseInterface from '../db/DatabaseInterface';
-import RestaurantSessionInterface from '../db/RestaurantSessionInterface';
+import AppHeader from '../../components/AppHeader';
+import Sidebar from '../../components/Sidebar';
+import DatabaseInterface from '../../db/DatabaseInterface';
+import RestaurantSessionInterface from '../../db/RestaurantSessionInterface';
 import './AccountSettings.css';
+
+const EMAIL_PATTERN = /^\S+@\S+\.\S+$/;
+const REQUIRED_PHONE_LENGTH = 10;
 
 /* ---------- time helpers ---------- */
 
@@ -126,6 +130,30 @@ export default function AccountSettings() {
       alert('Settings not loaded.');
       return;
     }
+
+    if (fieldKey === 'phone') {
+      const digits = String(value ?? '').replace(/[^0-9]/g, '');
+      if (digits.length !== REQUIRED_PHONE_LENGTH) {
+        alert('Enter a 10-digit phone number before confirming.');
+        return;
+      }
+    }
+
+    if (fieldKey === 'email') {
+      const trimmed = String(value ?? '').trim();
+      if (!trimmed || !EMAIL_PATTERN.test(trimmed)) {
+        alert('Enter a valid email address before confirming.');
+        return;
+      }
+    }
+
+    if (fieldKey === 'contactPerson') {
+      if (!String(value ?? '').trim()) {
+        alert('Contact person name cannot be empty.');
+        return;
+      }
+    }
+
     if (String(savedSettings[fieldKey] ?? '') === String(value ?? '')) {
       alert('No change detected — edit the field before confirming.');
       return;
@@ -174,6 +202,23 @@ export default function AccountSettings() {
 
   function confirmSaveAll() {
     if (!window.confirm('Save all account settings?')) return;
+
+    const phoneDigits = String(settings.phone ?? '').replace(/[^0-9]/g, '');
+    if (phoneDigits.length !== REQUIRED_PHONE_LENGTH) {
+      alert('Phone number must be exactly 10 digits before saving.');
+      return;
+    }
+
+    if (!settings.email || !EMAIL_PATTERN.test(String(settings.email).trim())) {
+      alert('Provide a valid email address before saving.');
+      return;
+    }
+
+    if (!String(settings.contactPerson ?? '').trim()) {
+      alert('Contact person is required before saving.');
+      return;
+    }
+
     const payload = {
       phone: settings.phone,
       email: settings.email,
@@ -190,17 +235,20 @@ export default function AccountSettings() {
 
   if (!settings) {
     return (
-      <div className="app-root">
-        <h1 className="page-title">{restaurantInfo?.name ? `Welcome to Your Account Page for ${restaurantInfo.name}!` : 'Welcome To Your Account Page!'}</h1>
-        <div className="content">
-          <Sidebar restaurantName={restaurantInfo?.name ?? 'Loading...'} status={restaurantInfo?.status} />
-          <main className="main-panel">
-            <div className="panel-inner">
-              <div className="loading">Loading settings...</div>
-            </div>
-          </main>
+      <>
+        <AppHeader />
+        <div className="app-root">
+          <h1 className="page-title">{restaurantInfo?.name ? `Welcome to Your Account Page for ${restaurantInfo.name}!` : 'Welcome To Your Account Page!'}</h1>
+          <div className="content">
+            <Sidebar restaurantName={restaurantInfo?.name ?? 'Loading...'} status={restaurantInfo?.status} />
+            <main className="main-panel">
+              <div className="panel-inner">
+                <div className="loading">Loading settings...</div>
+              </div>
+            </main>
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 
@@ -210,7 +258,9 @@ export default function AccountSettings() {
   const contactChanged = String(settings.contactPerson ?? '') !== String(savedSettings?.contactPerson ?? '');
 
   return (
-    <div className="app-root account-settings-root">
+    <>
+      <AppHeader />
+      <div className="app-root account-settings-root">
       <h1 className="page-title">{restaurantInfo?.name ? `Welcome to Your Account Page for ${restaurantInfo.name}!` : 'Welcome To Your Account Page!'}</h1>
 
       <div className="content">
@@ -253,7 +303,12 @@ export default function AccountSettings() {
                       placeholder="Phone number"
                       inputMode="tel"
                       value={settings.phone}
-                      onChange={(e) => setSettings(prev => ({ ...prev, phone: (String(e.target.value || '')).replace(/[^0-9]/g, '') }))}
+                      onChange={(e) =>
+                      setSettings((prev) => ({
+                        ...prev,
+                        phone: (String(e.target.value || '')).replace(/[^0-9]/g, '').slice(0, REQUIRED_PHONE_LENGTH),
+                      }))
+                    }
                     />
                     <button
                       className="control-btn"
@@ -375,6 +430,7 @@ export default function AccountSettings() {
           </div>
         </main>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

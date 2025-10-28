@@ -36,3 +36,15 @@
     transform: rotate(360deg);
   }
 }
+
+.owner-orders-callout {
+  margin-top: 20px;
+  padding: 14px 18px;
+  border-radius: 12px;
+  background: rgba(99, 102, 241, 0.1);
+  color: #3730a3;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
