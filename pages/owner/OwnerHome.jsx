@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import AppHeader from '../../components/AppHeader';
 import Sidebar from '../../components/Sidebar';
 import Statistics from '../../components/Statistics';
 import DatabaseInterface from '../../db/DatabaseInterface';
+import { useOrders } from '../../contexts/OrderContext';
 
 export default function OwnerHome() {
   const [restaurantInfo, setRestaurantInfo] = useState(null);
   const [stats, setStats] = useState(null);
+  const { orders, orderStatuses } = useOrders();
+  const activeOrders = useMemo(
+    () => orders.filter((order) => order.status !== orderStatuses.COMPLETED).length,
+    [orders, orderStatuses]
+  );
 
   useEffect(() => {
     DatabaseInterface.getRestaurantInfo().then((info) => setRestaurantInfo(info));
@@ -13,7 +20,9 @@ export default function OwnerHome() {
   }, []);
 
   return (
-    <div className="app-root">
+    <>
+      <AppHeader />
+      <div className="app-root">
       <h1 className="page-title">
         {restaurantInfo?.name
           ? `Welcome to Your Home Page for ${restaurantInfo.name}!`
@@ -32,9 +41,13 @@ export default function OwnerHome() {
                 <Statistics data={stats} />
               )}
             </div>
+            <div className="owner-orders-callout" role="status">
+              Active orders in queue: <strong>{activeOrders}</strong>
+            </div>
           </div>
         </main>
       </div>
-    </div>
+      </div>
+    </>
   );
 }

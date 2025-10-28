@@ -1,0 +1,82 @@
+.fd-app-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px clamp(20px, 4vw, 48px);
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.35);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  backdrop-filter: blur(8px);
+}
+
+.fd-app-header__brand {
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  overflow: visible;
+}
+
+.fd-app-header__brand img {
+  height: 98px;
+  width: auto;
+  display: block;
+  transform: translateY(4px);
+}
+
+.fd-app-header__right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.fd-app-header__role {
+  padding: 6px 14px;
+  border-radius: 999px;
+  background: rgba(99, 102, 241, 0.12);
+  color: #4338ca;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.fd-app-header__nav {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 15px;
+}
+
+.fd-app-header__nav a,
+.fd-app-header__nav .link-button {
+  color: #4b5563;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.fd-app-header__nav a:hover,
+.fd-app-header__nav .link-button:hover {
+  color: #111827;
+}
+
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.fd-app-header__extra {
+  display: flex;
+  align-items: center;
+}
+
+@media (max-width: 640px) {
+  .fd-app-header {
+    flex-direction: column;
+    gap: 12px;
+    align-items: flex-start;
+  }
+}

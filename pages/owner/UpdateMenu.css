@@ -170,6 +170,7 @@
 .field textarea, .field input { padding:10px; border-radius:8px; border:1px solid #ccc; font-size:14px; width:100%; box-sizing:border-box; }
 .field-inline { display:flex; gap:12px; align-items:center; }
 .field-inline .field-label { min-width: 110px; }
+.field-error { color:#b91c1c; font-size:13px; margin-top:6px; }
 
 .image-uploader {
   display:flex;

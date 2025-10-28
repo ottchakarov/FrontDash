@@ -6,6 +6,10 @@ import { ROLE_HOME_PATH, useAuth } from './contexts/AuthContext';
 
 import Login from './pages/Login';
 import Landing from './pages/Landing';
+import RestaurantList from './pages/customer/RestaurantList';
+import RestaurantMenu from './pages/customer/RestaurantMenu';
+import Checkout from './pages/customer/Checkout';
+import OrderConfirmation from './pages/customer/OrderConfirmation';
 import CustomerDashboard from './pages/customer/CustomerDashboard';
 import StaffDashboard from './pages/staff/StaffDashboard';
 import AdminDashboard from './pages/admin/AdminDashboard';
@@ -13,6 +17,7 @@ import OwnerHome from './pages/owner/OwnerHome';
 import UpdateMenu from './pages/owner/UpdateMenu';
 import AccountSettings from './pages/owner/AccountSettings';
 import Withdraw from './pages/owner/Withdraw';
+import OwnerRegistration from './pages/OwnerRegistration';
 
 export default function App() {
   const { loggedIn, role } = useAuth();
@@ -20,7 +25,7 @@ export default function App() {
 
   const handleSearch = useCallback(
     (address) => {
-      navigate('/login?role=customer', { state: { address } });
+      navigate('/restaurants', { state: { address } });
     },
     [navigate]
   );
@@ -34,7 +39,7 @@ export default function App() {
   }, [navigate]);
 
   const handleOwnerRegister = useCallback(() => {
-    navigate('/login?role=owner');
+    navigate('/owner/setup');
   }, [navigate]);
 
   const landingProps = {
@@ -57,14 +62,11 @@ export default function App() {
         }
       />
 
-      <Route
-        path="/customer"
-        element={
-          <ProtectedRoute allowedRoles={['customer']}>
-            <CustomerDashboard />
-          </ProtectedRoute>
-        }
-      />
+      <Route path="/restaurants" element={<RestaurantList />} />
+      <Route path="/restaurant/:restaurantId" element={<RestaurantMenu />} />
+      <Route path="/checkout" element={<Checkout />} />
+      <Route path="/order/confirm" element={<OrderConfirmation />} />
+      <Route path="/order/track" element={<CustomerDashboard />} />
 
       <Route
         path="/staff"
@@ -92,6 +94,8 @@ export default function App() {
           </ProtectedRoute>
         }
       />
+
+      <Route path="/owner/setup" element={<OwnerRegistration />} />
 
       <Route
         path="/owner/update-menu"

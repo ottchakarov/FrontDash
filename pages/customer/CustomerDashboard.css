@@ -270,6 +270,135 @@
   transform: translateY(-2px);
 }
 
+.customer-checkout {
+  margin-top: 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.checkout-card {
+  background: #ffffff;
+  border: 1px solid rgba(148, 163, 184, 0.25);
+  border-radius: 18px;
+  padding: clamp(20px, 4vw, 32px);
+  box-shadow: 0 14px 35px rgba(15, 23, 42, 0.12);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.checkout-form {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.checkout-fieldset {
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 14px;
+  padding: 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.checkout-fieldset legend {
+  padding: 0 6px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.checkout-fieldset label {
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.checkout-fieldset input,
+.checkout-fieldset select {
+  border-radius: 10px;
+  border: 1px solid rgba(148, 163, 184, 0.6);
+  padding: 10px 12px;
+  font-size: 15px;
+  background: #f8fafc;
+}
+
+.checkout-fieldset input:focus-visible,
+.checkout-fieldset select:focus-visible {
+  outline: 3px solid rgba(59, 130, 246, 0.35);
+  outline-offset: 2px;
+  background: #fff;
+}
+
+.checkout-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.checkout-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.4);
+  background: rgba(248, 250, 252, 0.65);
+}
+
+.checkout-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 18px;
+}
+
+.checkout-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.checkout-actions {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.checkout-submit {
+  padding-inline: 24px;
+}
+
+.checkout-error {
+  color: #b91c1c;
+  font-size: 13px;
+}
+
+.checkout-warning {
+  color: #c2410c;
+  font-size: 14px;
+}
+
+.checkout-alert {
+  background: #fff1f2;
+  border: 1px solid #fda4af;
+  border-radius: 12px;
+  padding: 16px 18px;
+  color: #9f1239;
+}
+
+.checkout-alert ul {
+  margin: 8px 0 0;
+  padding-left: 20px;
+}
+
+.checkout-success {
+  background: #ecfdf5;
+  border: 1px solid #34d399;
+  border-radius: 12px;
+  padding: 14px 18px;
+  color: #047857;
+}
+
 @media (max-width: 960px) {
   .customer-content {
     grid-template-columns: 1fr;

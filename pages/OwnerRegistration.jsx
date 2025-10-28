@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import AppHeader from '../components/AppHeader';
 import { useRegistration } from '../contexts/RegistrationContext';
 import './OwnerRegistration.css';
 
@@ -41,8 +42,8 @@ function buildErrors(values) {
   const phoneDigits = values.contactPhone.replace(/[^\d]/g, '');
   if (!phoneDigits) {
     errors.contactPhone = 'Phone number is required.';
-  } else if (phoneDigits.length < 10 || phoneDigits.length > 15) {
-    errors.contactPhone = 'Phone number should be between 10 and 15 digits.';
+  } else if (phoneDigits.length !== 10) {
+    errors.contactPhone = 'Phone number must be exactly 10 digits.';
   }
 
   if (!values.operatingHours.trim()) {
@@ -76,7 +77,11 @@ export default function OwnerRegistration() {
   );
 
   const handleChange = (field) => (event) => {
-    const value = event.target.value;
+    const rawValue = event.target.value;
+    const value =
+      field === 'contactPhone'
+        ? rawValue.replace(/[^\d]/g, '').slice(0, 10)
+        : rawValue;
     setFormData((prev) => ({ ...prev, [field]: value }));
     setTouched((prev) => ({ ...prev, [field]: true }));
   };
@@ -116,7 +121,9 @@ export default function OwnerRegistration() {
   };
 
   return (
-    <div className="owner-registration">
+    <>
+      <AppHeader />
+      <div className="owner-registration">
       <header className="owner-registration__header">
         <div>
           <p className="owner-registration__eyebrow">Partner with FrontDash</p>
@@ -186,10 +193,12 @@ export default function OwnerRegistration() {
               id="contactPhone"
               name="contactPhone"
               type="tel"
+              inputMode="numeric"
+              pattern="\d{10}"
               value={formData.contactPhone}
               onChange={handleChange('contactPhone')}
               onBlur={handleBlur('contactPhone')}
-              placeholder="(555) 123-4567"
+              placeholder="5551234567"
             />
             {touched.contactPhone && errors.contactPhone && (
               <p className="owner-registration__error">{errors.contactPhone}</p>
@@ -284,6 +293,7 @@ export default function OwnerRegistration() {
           </ul>
         </section>
       )}
-    </div>
+      </div>
+    </>
   );
 }

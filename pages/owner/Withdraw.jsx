@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import AppHeader from '../../components/AppHeader';
 import Sidebar from '../../components/Sidebar';
 import DatabaseInterface from '../../db/DatabaseInterface'; // existing in your app
 import WithdrawSessionInterface from '../../db/WithdrawSessionInterface';
@@ -112,7 +113,9 @@ export default function Withdraw() {
   }
 
   return (
-    <div className="app-root withdraw-root">
+    <>
+      <AppHeader />
+      <div className="app-root withdraw-root">
       <h1 className="page-title">
         {restaurantInfo?.name ? `Welcome to Your Account Page for ${restaurantInfo.name}!` : 'Welcome To Your Account Page!'}
       </h1>
@@ -162,5 +165,6 @@ export default function Withdraw() {
         </main>
       </div>
     </div>
+    </>
   );
 }

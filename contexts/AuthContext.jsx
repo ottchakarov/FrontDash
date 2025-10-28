@@ -11,7 +11,7 @@ import { useNavigate } from 'react-router-dom';
 const AuthContext = createContext();
 
 export const ROLE_HOME_PATH = {
-  customer: '/customer',
+  customer: '/restaurants',
   staff: '/staff',
   admin: '/admin',
   owner: '/owner',
