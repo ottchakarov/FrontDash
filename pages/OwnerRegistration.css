@@ -1,0 +1,233 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700&display=swap');
+
+.owner-registration {
+  font-family: 'Poppins', system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  min-height: 100vh;
+  background: linear-gradient(180deg, rgba(243, 196, 196, 0.2), rgba(238, 167, 167, 0.4));
+  padding: 48px 16px 64px;
+  color: #2d2a2a;
+}
+
+.owner-registration__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 24px;
+  max-width: 960px;
+  margin: 0 auto 40px;
+}
+
+.owner-registration__eyebrow {
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  color: #b76a6a;
+}
+
+.owner-registration__title {
+  margin: 0 0 12px;
+  font-size: clamp(28px, 4vw, 42px);
+  font-weight: 700;
+  color: #311111;
+}
+
+.owner-registration__subtitle {
+  margin: 0;
+  color: #5a4747;
+  max-width: 520px;
+}
+
+.owner-registration__back {
+  color: #af4c4c;
+  font-weight: 600;
+  text-decoration: none;
+  padding: 8px 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.owner-registration__back:hover,
+.owner-registration__back:focus {
+  text-decoration: underline;
+}
+
+.owner-registration__form {
+  background: #fff;
+  border-radius: 24px;
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.08);
+  padding: 32px;
+  max-width: 960px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.owner-registration__field {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.owner-registration__field label {
+  font-weight: 600;
+  color: #3c1c1c;
+}
+
+.owner-registration__field input,
+.owner-registration__field textarea {
+  font: inherit;
+  padding: 14px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  background: rgba(255, 255, 255, 0.9);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.owner-registration__field input:focus,
+.owner-registration__field textarea:focus {
+  outline: none;
+  border-color: #e68c8c;
+  box-shadow: 0 0 0 4px rgba(230, 140, 140, 0.18);
+}
+
+.owner-registration__field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+
+.owner-registration__field--inline {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 24px;
+}
+
+.owner-registration__error {
+  color: #c53030;
+  font-size: 14px;
+  margin: -6px 0 0;
+}
+
+.owner-registration__submit-error {
+  color: #8b1a1a;
+  background: rgba(197, 48, 48, 0.1);
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-weight: 600;
+}
+
+.owner-registration__submit {
+  align-self: flex-start;
+  background: linear-gradient(90deg, #e68c8c, #f3c4c4);
+  border: none;
+  color: #fff;
+  font-weight: 700;
+  padding: 14px 32px;
+  border-radius: 999px;
+  cursor: pointer;
+  transition: transform 0.2s ease, filter 0.2s ease;
+  box-shadow: 0 12px 20px rgba(230, 140, 140, 0.35);
+}
+
+.owner-registration__submit:hover:not(:disabled) {
+  filter: brightness(0.95);
+  transform: translateY(-2px);
+}
+
+.owner-registration__submit:active:not(:disabled) {
+  transform: translateY(1px);
+}
+
+.owner-registration__submit:disabled {
+  cursor: not-allowed;
+  background: linear-gradient(90deg, rgba(243, 196, 196, 0.7), rgba(238, 167, 167, 0.7));
+  box-shadow: none;
+}
+
+.owner-registration__result,
+.owner-registration__saved {
+  max-width: 960px;
+  margin: 32px auto 0;
+  background: #fff;
+  border-radius: 20px;
+  padding: 24px 28px;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.06);
+}
+
+.owner-registration__result h2 {
+  margin: 0 0 12px;
+  font-size: 24px;
+  color: #311111;
+}
+
+.owner-registration__result p {
+  margin: 0 0 16px;
+}
+
+.owner-registration__result dl {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 0;
+}
+
+.owner-registration__result dt {
+  font-weight: 600;
+  color: #5a4747;
+}
+
+.owner-registration__result dd {
+  margin: 4px 0 0;
+}
+
+.owner-registration__saved h3 {
+  margin: 0 0 16px;
+  font-size: 20px;
+  color: #311111;
+}
+
+.owner-registration__saved ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.owner-registration__saved li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: rgba(243, 196, 196, 0.28);
+}
+
+.owner-registration__saved-name {
+  font-weight: 600;
+  color: #4a1f1f;
+}
+
+.owner-registration__saved-contact,
+.owner-registration__saved-time {
+  color: #6d4c4c;
+  font-size: 14px;
+}
+
+@media (max-width: 720px) {
+  .owner-registration {
+    padding: 32px 12px 48px;
+  }
+
+  .owner-registration__header {
+    flex-direction: column;
+  }
+
+  .owner-registration__form {
+    padding: 24px;
+  }
+}

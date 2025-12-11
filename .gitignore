@@ -1,0 +1,13 @@
+# Node / React
+node_modules
+dist
+.vite
+
+# Java / Spring Boot
+backend/target
+*.log
+
+# OS / IDE
+.DS_Store
+.idea
+.vscode
